@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('code clone') {
+            steps {
+                echo 'Code clone from git'
+				git branch: 'main', url: 'https://github.com/prawin6370/Praveen_mindcircuit15d.git'
+            }
+        }
+		stage('Buid code') {
+            steps {
+                echo 'build code using maven tool'
+				sh 'mvn clean install'
+            }
+    }
+
+		stage('deploy') {
+            steps {
+                echo 'deploy artifact on to tomcat'
+				deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat', path: '', url: 'http://3.87.145.219:8080/')], contextPath: 'praveen', war: '**/*.war'
+				
+            }
+        }
+    }
+}
